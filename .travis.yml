@@ -15,7 +15,9 @@ before_install:
 
 install: make all
 
-before_deploy: make dist
+before_deploy:
+  - pip install --user awscli
+  - make dist
 
 deploy:
   skip_cleanup: true

@@ -52,6 +52,7 @@ func runtask(filename string) {
 			aws.String("--v4"),
 			aws.String("--url"),
 			esurl,
+			aws.String("ingest"),
 			&filename,
 		},
 	}
