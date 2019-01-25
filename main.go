@@ -36,7 +36,7 @@ func runtask(filename string) {
 	cluster := aws.String(os.Getenv("ECS_CLUSTER"))
 	family := aws.String(os.Getenv("ECS_FAMILY"))
 	esurl := aws.String(os.Getenv("ES_URL"))
-	subnets_s := strings.Split(",", os.Getenv("ECS_SUBNETS"))
+	subnets_s := strings.Split(os.Getenv("ECS_SUBNETS"), ",")
 
 	var subnets []*string
 	for _, s := range subnets_s {
@@ -49,19 +49,21 @@ func runtask(filename string) {
 	}
 	override := &ecs.ContainerOverride{
 		Command: []*string{
-			aws.String("--v4"),
 			aws.String("--url"),
 			esurl,
 			aws.String("ingest"),
 			&filename,
 		},
 	}
+	taskoverride := &ecs.TaskOverride{
+		ContainerOverrides: []*ecs.ContainerOverride{override},
+	}
 	input := &ecs.RunTaskInput{
 		Cluster:              cluster,
 		Count:                aws.Int64(1),
 		LaunchType:           aws.String("FARGATE"),
 		NetworkConfiguration: &ecs.NetworkConfiguration{AwsvpcConfiguration: vpc},
-		Overrides:            &ecs.TaskOverride{ContainerOverrides: []*ecs.ContainerOverride{override}},
+		Overrides:            taskoverride,
 		TaskDefinition:       family,
 	}
 	svc := ecs.New(awssession)
