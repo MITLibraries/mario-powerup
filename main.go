@@ -54,6 +54,7 @@ func runtask(filename string) {
 			aws.String("ingest"),
 			&filename,
 		},
+		Name: aws.String("dip"),
 	}
 	taskoverride := &ecs.TaskOverride{
 		ContainerOverrides: []*ecs.ContainerOverride{override},
