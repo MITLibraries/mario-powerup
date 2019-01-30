@@ -20,3 +20,5 @@ dist: all ## Create Lambda distribution
 
 publish: dist ## Push the Lambda distribution to S3
 	aws s3 cp mario.zip s3://mario-stage-lambda/mario.zip
+	aws lambda update-function-code --function-name mario-stage-lambda \
+		--s3-bucket mario-stage-lambda --s3-key mario.zip
