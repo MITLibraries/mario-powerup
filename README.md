@@ -1,4 +1,4 @@
-# mario-powerup :electric_plug:
+# mario-powerup :mushroom:
 
 mario-powerup is a Lambda function that starts the mario Fargate task. There's no easy way to trigger a Fargate task from an S3 event while passing the uploaded file name to the task. This function serves as the intermediary.
 
