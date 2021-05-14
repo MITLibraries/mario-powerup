@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -48,16 +49,38 @@ func runtask(filename string) {
 		SecurityGroups: []*string{securitygroup},
 		Subnets:        subnets,
 	}
+
+	// This block relies on certain file naming conventions to work. Daily
+	// updates to aleph have the string mit01_edsu1 in the filename. If that
+	// string is present we will add the records to the current production
+	// aleph index instead of creating a new index.
 	override := &ecs.ContainerOverride{
-		Command: []*string{
+		Name: aws.String("dip"),
+	}
+	if strings.Contains(filename, "mit01_edsu1") {
+		log.Printf("Update file detected: %s", filename)
+		command := []*string{
 			aws.String("--url"),
 			esurl,
 			aws.String("ingest"),
-			aws.String("--debug"),
+			aws.String("--source"),
+			aws.String("aleph"),
+			&filename,
+		}
+		override.SetCommand(command)
+	} else {
+		log.Printf("Full data dump detected: %s", filename)
+		command := []*string{
+			aws.String("--url"),
+			esurl,
+			aws.String("ingest"),
+			aws.String("--source"),
+			aws.String("aleph"),
+			aws.String("--new"),
 			aws.String("--auto"),
 			&filename,
-		},
-		Name: aws.String("dip"),
+		}
+		override.SetCommand(command)
 	}
 	taskoverride := &ecs.TaskOverride{
 		ContainerOverrides: []*ecs.ContainerOverride{override},

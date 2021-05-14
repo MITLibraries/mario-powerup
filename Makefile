@@ -7,14 +7,13 @@ help: ## Print this message
 		/^[-_[:alpha:]]+:.?*##/ { printf "  %-15s%s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
 all: ## Build binary
-	dep ensure
 	GOOS=linux GOARCH=amd64 go build
 
 install: all ## Install binary
 	GOOS=linux GOARCH=amd64 go install
 
 update: ## Update dependencies
-	dep ensure -update
+	go get -u
 
 dist: all ## Create Lambda distribution
 	zip mario.zip ./mario-powerup
