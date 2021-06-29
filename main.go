@@ -51,9 +51,9 @@ func runtask(filename string) {
 	}
 
 	// This block relies on certain file naming conventions to work. Daily
-	// updates to aleph have the string UPDATE in the filename. If that
+	// updates to Alma have the string UPDATE in the filename. If that
 	// string is present we will add the records to the current production
-	// aleph index instead of creating a new index.
+	// Alma index instead of creating a new index.
 	override := &ecs.ContainerOverride{
 		Name: aws.String("dip"),
 	}
@@ -64,7 +64,7 @@ func runtask(filename string) {
 			esurl,
 			aws.String("ingest"),
 			aws.String("--source"),
-			aws.String("aleph"),
+			aws.String("alma"),
 			&filename,
 		}
 		override.SetCommand(command)
@@ -75,7 +75,7 @@ func runtask(filename string) {
 			esurl,
 			aws.String("ingest"),
 			aws.String("--source"),
-			aws.String("aleph"),
+			aws.String("alma"),
 			aws.String("--new"),
 			aws.String("--auto"),
 			&filename,
